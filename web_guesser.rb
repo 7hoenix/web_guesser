@@ -1,13 +1,26 @@
 require 'sinatra'
 require 'sinatra/reloader'
 
-SECRET_NUMBER = rand(101)
+@@secret_number = rand(101)
+@@guesses       = 5
+
 get '/' do
   guess = params["guess"]
-  message = check_guess(guess)
+  message = generate_message(guess)
   background = background_color(guess)
-  erb :index, :locals => {:number => SECRET_NUMBER, :message => message,
+  erb :index, :locals => {:number => @@secret_number, :message => message,
     :background => background}
+end
+
+def generate_message(guess)
+  if @@guesses > 0
+    @@guesses -= 1
+    message = check_guess(guess)
+  else
+    @@guesses = 5
+    @@secret_number= rand(101)
+    message = "You are out of guesses... and therefore lose."
+  end
 end
 
 def background_color(guess)
@@ -21,7 +34,25 @@ def background_color(guess)
 end
 
 def differential(guess)
-  (guess.to_i - SECRET_NUMBER).abs
+  (guess.to_i - @@secret_number).abs
+end
+
+
+def check_guess(guess)
+  pre_message = pre_message(differential(guess))
+  if guess.nil?
+    message = "Take a guess"
+  elsif @@secret_number < guess.to_i
+    message = pre_message + "high!"
+  elsif @@secret_number > guess.to_i
+    message = pre_message + "low!"
+  else
+    @@secret_number = rand(101)
+    @@guesses = 5
+    message = "You got it right! Guesses and the secret number have been reset
+    for you to try again"
+  end
+  message
 end
 
 def pre_message(differential)
@@ -30,19 +61,5 @@ def pre_message(differential)
   else
     pre_message = "Too "
   end
-end
-
-def check_guess(guess)
-  pre_message = pre_message(differential(guess))
-  if guess.nil?
-    message = "Take a guess"
-  elsif SECRET_NUMBER < guess.to_i
-    message = pre_message + "high!"
-  elsif SECRET_NUMBER > guess.to_i
-    message = pre_message + "low!"
-  else
-    message = "You got it right!"
-  end
-  message
 end
 
