@@ -1,7 +1,6 @@
 require 'sinatra'
 require 'sinatra/reloader'
 
-
 SECRET_NUMBER = rand(101)
 get '/' do
   guess = params["guess"]
@@ -13,11 +12,11 @@ end
 
 def background_color(guess)
   if differential(guess) >= 5
+    "maroon"
+  elsif differential(guess) == 0
+    "green"
+  else
     "red"
-elsif differential(guess) == 0
-  "green"
-else
-  "yellow"
   end
 end
 
