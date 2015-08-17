@@ -8,8 +8,9 @@ get '/' do
   guess = params["guess"]
   message = generate_message(guess)
   background = background_color(guess)
+  cheat_mode = params["cheat"]
   erb :index, :locals => {:number => @@secret_number, :message => message,
-    :background => background}
+    :background => background, :cheat_mode => cheat_mode }
 end
 
 def generate_message(guess)

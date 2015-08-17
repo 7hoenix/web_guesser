@@ -9,7 +9,7 @@
   <body>
     <p>
       <%= message %>
-      <% if message == "You got it right!" %>
+      <% if message == "You got it right!" || cheat_mode %>
         "The SECRET NUMBER is <%= number %>"
       <% end %>
     </p>
